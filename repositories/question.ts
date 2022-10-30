@@ -32,9 +32,9 @@ const makeQuestionRepository = (fileName: string): QuestionRepositoryInterface =
    };
 
    const getAnswer = async (questionId: string, answerId: string): Promise<Answer | null> => {
-      const questions = findQuestionById(await loadQuestions(), questionId);
-      if (!questions?.answers) return null;
-      return findAnswerById(questions.answers, answerId) ?? null;
+      const targetedQuestion = findQuestionById(await loadQuestions(), questionId);
+      if (!targetedQuestion) return null;
+      return findAnswerById(targetedQuestion.answers, answerId) ?? null;
    };
 
    const addAnswer = async (questionId: string, answer: AnswerDto): Promise<AddAnswerResponse> => {
