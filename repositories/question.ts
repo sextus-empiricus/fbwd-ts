@@ -1,5 +1,6 @@
 import { readFile, writeFile } from 'fs/promises';
 import { v4 as uuid } from 'uuid';
+import { CustomException } from '../exceptions/custom.exception';
 import {
    AddAnswerResponse,
    AddQuestionDto,
@@ -33,18 +34,14 @@ const makeQuestionRepository = (fileName: string): QuestionRepositoryInterface =
 
    const getAnswer = async (questionId: string, answerId: string): Promise<Answer | null> => {
       const targetedQuestion = findQuestionById(await loadQuestions(), questionId);
-      if (!targetedQuestion) return null;
+      if (!targetedQuestion) throw new CustomException('Provided id not match any question', 409);
       return findAnswerById(targetedQuestion.answers, answerId) ?? null;
    };
 
    const addAnswer = async (questionId: string, answer: AnswerDto): Promise<AddAnswerResponse> => {
       const questions = await loadQuestions();
       const targetedQuestion = findQuestionById(questions, questionId);
-      if (!targetedQuestion)
-         return {
-            updatedQuestionId: 'not found',
-            createdAnswerId: '',
-         };
+      if (!targetedQuestion) throw new CustomException('Provided id not match any question', 409);
       const newAnswer = { ...answer, id: uuid() };
       targetedQuestion.answers.push(newAnswer);
       const questionsUpdated = [

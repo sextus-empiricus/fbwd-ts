@@ -1,5 +1,6 @@
 import { rm, writeFile } from 'fs/promises';
 import { makeQuestionRepository } from './question';
+import { CustomException } from '../exceptions/custom.exception';
 import { QuestionRepositoryInterface } from '../types';
 
 describe('question repository', () => {
@@ -134,8 +135,10 @@ describe('question repository', () => {
             author: expect.any(String),
          });
       });
-      it('incorrect question id - should return null', async () => {
-         expect(await questionRepo.getAnswer('incorrectId', answerId)).toStrictEqual(null);
+      it('incorrect question id - throw an ConflictException', async () => {
+         await expect(
+            async () => await questionRepo.getAnswer('incorrectId', answerId),
+         ).rejects.toThrow(CustomException);
       });
       it('not found - should return a null', async () => {
          const { id } = questionsMock[0];
@@ -157,12 +160,10 @@ describe('question repository', () => {
             createdAnswerId: expect.stringMatching(v4),
          });
       });
-      it('incorrect question id - should return a proper response object', async () => {
-         const responseObj = await questionRepo.addAnswer('incorrectId', answerDtoMock);
-         expect(responseObj).toStrictEqual({
-            updatedQuestionId: expect.stringMatching('not found'),
-            createdAnswerId: expect.any(String),
-         });
+      it('incorrect question id - should throw a Custom Exception', async () => {
+         await expect(
+            async () => await questionRepo.addAnswer('incorrectId', answerDtoMock),
+         ).rejects.toThrow(CustomException);
       });
       it('should attach generated uuid to dto and return a proper data structure', async () => {
          const newAnswer = await questionRepo.getAnswer(questionId, newAnswerId);
