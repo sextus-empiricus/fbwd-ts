@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "lib": ["DOM", "ES6", "DOM.Iterable"],
+    "allowSyntheticDefaultImports": true,
+    "target": "ES6",
+    "downlevelIteration": true,
+    "module": "CommonJS",
+    "outDir": "dist",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "Node",
+    "esModuleInterop": true
+  }
+}
